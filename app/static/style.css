@@ -1,445 +1,134 @@
-const form = document.getElementById("calculationForm");
-const results = document.getElementById("results");
-const expenseInputs = document.getElementById("expenseInputs");
-
-let currentInput = null;
-
-
-// -----------------------------
-// Helpers
-// -----------------------------
-
-function money(value) {
-    return "PKR " + Number(value).toLocaleString();
+* {
+    box-sizing: border-box;
 }
 
-
-function formatName(name) {
-    return name
-        .replace(/([A-Z])/g, " $1")
-        .replace(/^./, char => char.toUpperCase());
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
 }
 
-
-// -----------------------------
-// Calculate
-// -----------------------------
-
-async function calculate(data) {
-
-    try {
-
-        const response = await fetch("/api/calculate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-
-
-        if (!response.ok) {
-
-            const error = await response.text();
-
-            console.error("API Error:", error);
-
-            alert("Calculation failed.");
-
-            return;
-        }
-
-
-        const result = await response.json();
-
-        console.log("Calculation result:", result);
-
-        displayResults(result);
-
-        createExpenseInputs(result.expenses);
-
-
-    } catch (error) {
-
-        console.error("Connection error:", error);
-
-        alert("Could not connect to the server.");
-
-    }
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
 }
 
-
-// -----------------------------
-// Main Form
-// -----------------------------
-
-if (form) {
-
-    form.addEventListener("submit", async function(event) {
-
-        event.preventDefault();
-
-
-        currentInput = {
-
-            totalStudents:
-                Number(
-                    document.getElementById("totalStudents").value
-                ),
-
-            feePerMonth:
-                Number(
-                    document.getElementById("feePerMonth").value
-                ),
-
-            numTeachers:
-                Number(
-                    document.getElementById("numTeachers").value
-                ),
-
-            rentInput:
-                Number(
-                    document.getElementById("rentInput").value
-                )
-
-        };
-
-
-        console.log("Sending:", currentInput);
-
-
-        await calculate(currentInput);
-
-    });
-
+header {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-
-// -----------------------------
-// Display Results
-// -----------------------------
-
-function displayResults(result) {
-
-    const grossRevenue =
-        document.getElementById("grossRevenue");
-
-    const totalExpenses =
-        document.getElementById("totalExpenses");
-
-    const remainingAmount =
-        document.getElementById("remainingAmount");
-
-
-    if (grossRevenue) {
-        grossRevenue.textContent =
-            money(result.grossRevenue);
-    }
-
-
-    if (totalExpenses) {
-        totalExpenses.textContent =
-            money(result.totalExpenses);
-    }
-
-
-    if (remainingAmount) {
-        remainingAmount.textContent =
-            money(result.remainingAmount);
-    }
-
-
-    // -----------------------------
-    // Base Expenses
-    // -----------------------------
-
-    const baseExpenses =
-        document.getElementById("baseExpenses");
-
-    if (baseExpenses) {
-        baseExpenses.textContent =
-            money(result.baseExpenses);
-    }
-
-
-    // -----------------------------
-    // Contingency
-    // -----------------------------
-
-    const contingency =
-        document.getElementById("contingency");
-
-    if (contingency) {
-        contingency.textContent =
-            money(result.contingency);
-    }
-
-
-    // -----------------------------
-    // Expense Breakdown
-    // -----------------------------
-
-    const expensesContainer =
-        document.getElementById("expenses");
-
-
-    if (expensesContainer) {
-
-        expensesContainer.innerHTML = "";
-
-
-        for (
-            const [name, value]
-            of Object.entries(result.expenses)
-        ) {
-
-            const row =
-                document.createElement("div");
-
-
-            row.className = "expense-row";
-
-
-            row.innerHTML = `
-                <span>${formatName(name)}</span>
-                <strong>${money(value)}</strong>
-            `;
-
-
-            expensesContainer.appendChild(row);
-
-        }
-
-    }
-
-
-    // -----------------------------
-    // Calculation Explanation
-    // -----------------------------
-
-    const explanation =
-        document.getElementById("calculationExplanation");
-
-
-    if (explanation && currentInput) {
-
-        explanation.innerHTML = `
-
-            <p>
-                <strong>Gross Revenue:</strong>
-                ${currentInput.totalStudents}
-                students ×
-                PKR ${Number(
-                    currentInput.feePerMonth
-                ).toLocaleString()}
-                =
-                ${money(result.grossRevenue)}
-            </p>
-
-
-            <p>
-                <strong>Teacher Salaries:</strong>
-                ${currentInput.numTeachers}
-                teachers ×
-                PKR 15,000 =
-                ${money(result.expenses.teacherSalaries)}
-            </p>
-
-
-            <p>
-                <strong>Admin & Staff:</strong>
-                Fixed monthly allocation =
-                ${money(result.expenses.adminStaff)}
-            </p>
-
-
-            <p>
-                <strong>Electricity:</strong>
-                ${currentInput.totalStudents}
-                students ×
-                PKR 300 =
-                ${money(result.expenses.electricity)}
-            </p>
-
-
-            <p>
-                <strong>Water:</strong>
-                ${currentInput.totalStudents}
-                students ×
-                PKR 50 =
-                ${money(result.expenses.water)}
-            </p>
-
-
-            <p>
-                <strong>Stationery:</strong>
-                ${currentInput.totalStudents}
-                students ×
-                PKR 150 =
-                ${money(result.expenses.stationery)}
-            </p>
-
-
-            <p>
-                <strong>Maintenance:</strong>
-                ${currentInput.totalStudents}
-                students ×
-                PKR 100 =
-                ${money(result.expenses.maintenance)}
-            </p>
-
-
-            <p>
-                <strong>Rent:</strong>
-                ${money(result.expenses.rent)}
-            </p>
-
-
-            <p>
-                <strong>Contingency:</strong>
-                5% of base expenses =
-                ${money(result.contingency)}
-            </p>
-
-
-            <p>
-                <strong>Total Expenses:</strong>
-                ${money(result.totalExpenses)}
-            </p>
-
-
-            <p>
-                <strong>Final Remaining Amount:</strong>
-                ${money(result.grossRevenue)}
-                −
-                ${money(result.totalExpenses)}
-                =
-                <strong>
-                    ${money(result.remainingAmount)}
-                </strong>
-            </p>
-
-        `;
-
-    }
-
-
-    // -----------------------------
-    // Show Results
-    // -----------------------------
-
-    if (results) {
-        results.classList.remove("hidden");
-    }
-
+.card {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
 }
 
-
-// -----------------------------
-// Create Editable Expense Inputs
-// -----------------------------
-
-function createExpenseInputs(expenses) {
-
-    if (!expenseInputs) {
-        return;
-    }
-
-
-    expenseInputs.innerHTML = "";
-
-
-    for (
-        const [name, value]
-        of Object.entries(expenses)
-    ) {
-
-        const wrapper =
-            document.createElement("label");
-
-
-        wrapper.className =
-            "expense-input";
-
-
-        wrapper.innerHTML = `
-
-            <span>
-                ${formatName(name)}
-            </span>
-
-            <input
-                type="number"
-                min="0"
-                step="0.01"
-                data-expense="${name}"
-                value="${value}"
-            >
-
-        `;
-
-
-        expenseInputs.appendChild(wrapper);
-
-    }
-
+form {
+    display: grid;
+    gap: 18px;
 }
 
+label {
+    display: grid;
+    gap: 7px;
+    font-weight: bold;
+}
 
-// -----------------------------
-// Recalculate Button
-// -----------------------------
+input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 16px;
+}
 
-const recalculateButton =
-    document.getElementById("recalculateButton");
+button {
+    padding: 13px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 16px;
+    background: #1f2937;
+    color: white;
+}
 
+button:hover {
+    opacity: 0.9;
+}
 
-if (recalculateButton) {
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
 
-    recalculateButton.addEventListener(
-        "click",
-        async function() {
+.summary div {
+    padding: 20px;
+    background: #f4f6f8;
+    border-radius: 8px;
+}
 
-            if (!currentInput) {
+.summary span {
+    display: block;
+    margin-bottom: 8px;
+}
 
-                alert(
-                    "Please calculate the budget first."
-                );
+.summary strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 20px;
+}
 
-                return;
-            }
+.expense-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
 
+.hidden {
+    display: none;
+}
 
-            const overrides = {};
+.edit-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
 
+#expenseInputs {
+    display: grid;
+    gap: 12px;
+    margin: 20px 0;
+}
 
-            const inputs =
-                expenseInputs.querySelectorAll("input");
+.expense-input {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    align-items: center;
+}
 
+.expense-input input {
+    width: 100%;
+}
 
-            inputs.forEach(input => {
+#calculationExplanation p {
+    padding: 10px 0;
+    margin: 0;
+    border-bottom: 1px solid #eee;
+    line-height: 1.6;
+}
 
-                overrides[input.dataset.expense] =
-                    Number(input.value);
+@media (max-width: 700px) {
+    .summary {
+        grid-template-columns: 1fr;
+    }
 
-            });
-
-
-            console.log(
-                "Sending overrides:",
-                overrides
-            );
-
-
-            await calculate({
-
-                ...currentInput,
-
-                overrides: overrides
-
-            });
-
-        }
-    );
-
+    .expense-input {
+        grid-template-columns: 1fr;
+        gap: 7px;
+    }
 }
