@@ -1,0 +1,134 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+}
+
+form {
+    display: grid;
+    gap: 18px;
+}
+
+label {
+    display: grid;
+    gap: 7px;
+    font-weight: bold;
+}
+
+input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+button {
+    padding: 13px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 16px;
+    background: #1f2937;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.summary div {
+    padding: 20px;
+    background: #f4f6f8;
+    border-radius: 8px;
+}
+
+.summary span {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.summary strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 20px;
+}
+
+.expense-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.hidden {
+    display: none;
+}
+
+.edit-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+#expenseInputs {
+    display: grid;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.expense-input {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    align-items: center;
+}
+
+.expense-input input {
+    width: 100%;
+}
+
+#calculationExplanation p {
+    padding: 10px 0;
+    margin: 0;
+    border-bottom: 1px solid #eee;
+    line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+    .summary {
+        grid-template-columns: 1fr;
+    }
+
+    .expense-input {
+        grid-template-columns: 1fr;
+        gap: 7px;
+    }
+}

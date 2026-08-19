@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Financial Planner</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>School Financial Planner</h1>
+        <p>Estimate your school's monthly income and expenses.</p>
+    </header>
+
+    <section class="card">
+        <h2>School Information</h2>
+
+        <form id="calculationForm">
+
+            <label>
+                Number of Students
+                <input type="number" id="totalStudents" min="0" required>
+            </label>
+
+            <label>
+                Monthly Fee Per Student (PKR)
+                <input type="number" id="feePerMonth" min="0" required>
+            </label>
+
+            <label>
+                Number of Teachers
+                <input type="number" id="numTeachers" min="0" required>
+            </label>
+
+            <label>
+                Monthly Rent (PKR)
+                <input type="number" id="rentInput" min="0" value="0" required>
+            </label>
+
+            <button type="submit">Calculate Budget</button>
+
+        </form>
+    </section>
+
+    <section id="results" class="card hidden">
+
+        <h2>Monthly Financial Summary</h2>
+
+        <div class="summary">
+
+            <div>
+                <span>Gross Revenue</span>
+                <strong id="grossRevenue"></strong>
+            </div>
+
+            <div>
+                <span>Total Expenses</span>
+                <strong id="totalExpenses"></strong>
+            </div>
+
+            <div>
+                <span>Remaining Amount</span>
+                <strong id="remainingAmount"></strong>
+            </div>
+
+        </div>
+
+        <h2>Expense Breakdown</h2>
+
+        <div id="expenses"></div>
+
+        <div class="edit-section">
+
+            <h3>Adjust Expenses</h3>
+
+            <p>
+                Change any estimated expense if you know the actual amount.
+            </p>
+
+            <div id="expenseInputs"></div>
+
+            <button type="button" id="recalculateButton">
+                Recalculate
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <h2>How This Was Calculated</h2>
+
+            <div id="calculationExplanation"></div>
+
+        </div>
+
+        <h3>Base Expenses</h3>
+        <p id="baseExpenses"></p>
+
+        <h3>5% Contingency</h3>
+        <p id="contingency"></p>
+
+    </section>
+
+</div>
+
+<script src="/static/app.js"></script>
+
+</body>
+</html>
