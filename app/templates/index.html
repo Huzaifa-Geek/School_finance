@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Financial Planner</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
 </head>
 
 <body>
@@ -46,6 +46,7 @@
         </form>
     </section>
 
+
     <section id="results" class="card hidden">
 
         <h2>Monthly Financial Summary</h2>
@@ -54,24 +55,26 @@
 
             <div>
                 <span>Gross Revenue</span>
-                <strong id="grossRevenue"></strong>
+                <strong id="grossRevenue">PKR 0</strong>
             </div>
 
             <div>
                 <span>Total Expenses</span>
-                <strong id="totalExpenses"></strong>
+                <strong id="totalExpenses">PKR 0</strong>
             </div>
 
             <div>
                 <span>Remaining Amount</span>
-                <strong id="remainingAmount"></strong>
+                <strong id="remainingAmount">PKR 0</strong>
             </div>
 
         </div>
 
+
         <h2>Expense Breakdown</h2>
 
         <div id="expenses"></div>
+
 
         <div class="edit-section">
 
@@ -89,7 +92,8 @@
 
         </div>
 
-        <div class="card">
+
+        <div class="calculation-section">
 
             <h2>How This Was Calculated</h2>
 
@@ -97,17 +101,11 @@
 
         </div>
 
-        <h3>Base Expenses</h3>
-        <p id="baseExpenses"></p>
-
-        <h3>5% Contingency</h3>
-        <p id="contingency"></p>
-
     </section>
 
 </div>
 
-<script src="/static/app.js"></script>
+<script src="{{ url_for('static', path='app.js') }}"></script>
 
 </body>
 </html>
